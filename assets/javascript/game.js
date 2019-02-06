@@ -29,7 +29,20 @@ var hofPlayers = {
         "Andre Dawson",
         "Dizzy Dean",
         "Joe DiMaggio",
-        "Bob Gibson"
+        "Bob Gibson",
+        "Jimmie Foxx",
+        "Ford Frick",
+        "Lou Gehrig",
+        "Josh Gibson",
+        "Ken Griffey Jr",
+        "Vladimir Guerrero",
+        "Tony Gwynn",
+        "Rickey Henderson",
+        "Rogers Hornsby",
+        "Reggie Jackson",
+        "Randy Johnson",
+        "Chipper Jones",
+        "Sandy Koufax"
     ],
 
     // FUNCTIONS
