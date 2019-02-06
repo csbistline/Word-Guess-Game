@@ -8,7 +8,7 @@ var playerGuess = "";
 var wrongAnswers = "";
 
 // Initialize the wrong answer counter
-var answersLeft = 10;
+var answersLeft = 6;
 
 
 
@@ -35,10 +35,16 @@ var hofPlayers = {
     // FUNCTIONS
 
     selectPlayer: function () {
-        // set game over to false to begin new game
+        // reset all variables to begin new game
         this.isGameOver = false;
-        // reset the playerGuess variable
+        wrongAnswers = "";
         playerGuess = "";
+        answersLeft = 6;
+
+        // reset the answer counter to max number
+        document.getElementById("guessesRemaining").innerHTML = answersLeft;
+
+
         // randomly select a HOFer from the list
         var i = Math.floor((Math.random() * this.players.length));
         currentPlayer = this.players[i];
@@ -120,6 +126,7 @@ var hofPlayers = {
                 // confirm("You won! Would you like to play again?");
                 hofPlayers.isGameOver = true;
 
+                // WHY IS THIS EXECUTING BEFORE THE SCREEN UPDATES?
                 // start a new game
                 hofPlayers.playGame();
 
