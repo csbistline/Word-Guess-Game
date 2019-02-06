@@ -7,9 +7,17 @@ var playerGuess = "";
 // WHAT THE PLAYER HAS GUESSED WRONG SO FAR - begins as empty string
 var wrongAnswers = "";
 
+// Initialize the wrong answer counter
+var answersLeft = 10;
+
+
+
 var hofPlayers = {
     gameWins: 0,
     gameLosses: 0,
+    playerImage: "",
+    isGameOver: true,
+
     players: [
         "Hank Aaron",
         "Johnny Bench",
@@ -27,16 +35,23 @@ var hofPlayers = {
     // FUNCTIONS
 
     selectPlayer: function () {
+        // set game over to false to begin new game
+        this.isGameOver = false;
         // reset the playerGuess variable
         playerGuess = "";
         // randomly select a HOFer from the list
         var i = Math.floor((Math.random() * this.players.length));
-        // console.log(this.players[i]);
         currentPlayer = this.players[i];
-        console.log(currentPlayer);
+
+        //assign picture url to string
+        this.playerImage = "assets/images/" + currentPlayer + ".jpg";
+        console.log(this.playerImage);
+
     },
     showAnswer: function () {
         document.getElementById("currentPlayerName").innerHTML = currentPlayer;
+        document.getElementById("playerPic").src = this.playerImage;
+
     },
     createSpaces: function () {
 
@@ -58,48 +73,85 @@ var hofPlayers = {
         }
     },
     evaluateInput: function () {
+
         // This function is run whenever the user presses a key.
         document.onkeyup = function (event) {
+
+            // make everything uppercase to compare
             var currentLetter = event.key;
             currentLetter = currentLetter.toUpperCase();
-            // console.log("You selected: " + currentLetter);
             var playerUppercase = currentPlayer.toUpperCase();
-            //Check if key is in currentPlayer
+
+            //Check if currentLetter is in currentPlayer
             if (playerUppercase.includes(currentLetter)) {
                 // replace the _ with letter in playerGuess
                 for (var i = 0; i < playerUppercase.length; i++) {
-                    // console.log("Letter at " + i + " is " + playerUppercase.charAt(i))
                     if (playerUppercase.charAt(i) == currentLetter) {
-                        // console.log("Matches");
                         playerGuess = playerGuess.substr(0, i) + currentLetter + playerGuess.substr(i + 1);
-                        // console.log(playerGuess);
+
                         // Update the screen output of currentPlayer
                         document.getElementById("currentPlayerGuess").innerHTML = playerGuess;
                     }
                 }
             }
-            else if {
-                // letter has already been used, do nothing
-                // copy from above tomorrow...
+            else if (!wrongAnswers.includes(currentLetter)) {
+                // the resonse is wrong, get the wrong answer string
+                wrongAnswers = document.getElementById("lettersUsed").innerHTML;
+
+                // add the current letter to the wrong answer string and display it
+                wrongAnswers = wrongAnswers + currentLetter;
+                document.getElementById("lettersUsed").innerHTML = wrongAnswers;
+
+                // decrement the counter by one and display it
+                answersLeft--;
+                document.getElementById("guessesRemaining").innerHTML = answersLeft;
             }
-            } else {
-        // console.log("in else statement1")
-        var wrongAnswers = document.getElementById("lettersUsed").innerHTML;
-        // console.log("in else statement2")
-        // console.log(wrongAnswers);
-        // console.log("in else statement3")
-        wrongAnswers = wrongAnswers + currentLetter;
-        document.getElementById("lettersUsed").innerHTML = wrongAnswers;
-        // console.log("in else statement4")
-        // console.log(wrongAnswers);
-    }
-}
+            //EVALUATE WIN OR LOSS CONDITION
+            if (playerGuess === playerUppercase) {
+
+                // change messages on screen, show answers
+                document.getElementById("guessMessage").innerHTML = "You got it!";
+                hofPlayers.showAnswer();
+
+                //increment win counter and display to screen
+                hofPlayers.gameWins++;
+                document.getElementById("playerWins").innerHTML = "Wins: " + hofPlayers.gameWins;
+
+                // confirm("You won! Would you like to play again?");
+                hofPlayers.isGameOver = true;
+
+                // start a new game
+                hofPlayers.playGame();
+
+            } else if (answersLeft === 0) {
+                // change messages on screen, update player name and picture
+                document.getElementById("guessMessage").innerHTML = "You didn't get it.";
+                hofPlayers.showAnswer();
+
+                //increment loss counter and display to screen
+                hofPlayers.gameLosses++;
+                document.getElementById("playerLosses").innerHTML = "Losses: " + hofPlayers.gameLosses;
+
+                // set isGameOverFlag
+                hofPlayers.isGameOver = true;
+
+
+                // WHY IS THIS EXECUTING BEFORE THE SCREEN UPDATES?
+                // start a new game
+                hofPlayers.playGame();
+            }
+        }
     },
+    playGame: function () {
+        // if game over is set to true and user confirms to play, then execute these functions
+        var confirmPlay = confirm("Would you like to play?")
+        if (this.isGameOver || confirmPlay) {
+            this.selectPlayer();
+            this.createSpaces();
+            this.evaluateInput();
+        }
+    }
 };
 
-
-
-hofPlayers.selectPlayer();
-// hofPlayers.showAnswer();
-hofPlayers.createSpaces();
-hofPlayers.evaluateInput();
+// MAIN EXECUTION OF GAME
+hofPlayers.playGame();
