@@ -57,6 +57,10 @@ var hofPlayers = {
         // reset the answer counter to max number
         document.getElementById("guessesRemaining").innerHTML = answersLeft;
 
+        // reset lettersUsed to empty
+        document.getElementById("lettersUsed").innerHTML = wrongAnswers;
+
+
 
         // randomly select a HOFer from the list
         var i = Math.floor((Math.random() * this.players.length));
@@ -64,7 +68,7 @@ var hofPlayers = {
 
         //assign picture url to string
         this.playerImage = "assets/images/" + currentPlayer + ".jpg";
-        console.log(this.playerImage);
+        // console.log(this.playerImage);
 
     },
     showAnswer: function () {
@@ -92,86 +96,86 @@ var hofPlayers = {
         }
     },
     evaluateInput: function () {
-
         // This function is run whenever the user presses a key.
         document.onkeyup = function (event) {
+            // console.log("isGameOver? " + hofPlayers.isGameOver);
 
-            // make everything uppercase to compare
-            var currentLetter = event.key;
-            currentLetter = currentLetter.toUpperCase();
-            var playerUppercase = currentPlayer.toUpperCase();
+            if (!hofPlayers.isGameOver) {
 
-            //Check if currentLetter is in currentPlayer
-            if (playerUppercase.includes(currentLetter)) {
-                // replace the _ with letter in playerGuess
-                for (var i = 0; i < playerUppercase.length; i++) {
-                    if (playerUppercase.charAt(i) == currentLetter) {
-                        playerGuess = playerGuess.substr(0, i) + currentLetter + playerGuess.substr(i + 1);
+                // make everything uppercase to compare
+                var currentLetter = event.key;
+                currentLetter = currentLetter.toUpperCase();
+                var playerUppercase = currentPlayer.toUpperCase();
 
-                        // Update the screen output of currentPlayer
-                        document.getElementById("currentPlayerGuess").innerHTML = playerGuess;
+                //Check if currentLetter is in currentPlayer
+                if (playerUppercase.includes(currentLetter)) {
+                    // replace the _ with letter in playerGuess
+                    for (var i = 0; i < playerUppercase.length; i++) {
+                        if (playerUppercase.charAt(i) == currentLetter) {
+                            playerGuess = playerGuess.substr(0, i) + currentLetter + playerGuess.substr(i + 1);
+
+                            //log the output
+                            // console.log("currentLetter is " + currentLetter + ", and playerGuess is " + playerGuess);
+
+                            // Update the screen output of currentPlayer with playerGuess
+                            document.getElementById("currentPlayerGuess").innerHTML = playerGuess;
+                        }
                     }
                 }
-            }
-            else if (!wrongAnswers.includes(currentLetter)) {
-                // the resonse is wrong, get the wrong answer string
-                wrongAnswers = document.getElementById("lettersUsed").innerHTML;
+                else if (!wrongAnswers.includes(currentLetter)) {
+                    // the resonse is wrong, get the wrong answer string
+                    wrongAnswers = document.getElementById("lettersUsed").innerHTML;
 
-                // add the current letter to the wrong answer string and display it
-                wrongAnswers = wrongAnswers + currentLetter;
-                document.getElementById("lettersUsed").innerHTML = wrongAnswers;
+                    // add the current letter to the wrong answer string and display it
+                    wrongAnswers = wrongAnswers + currentLetter;
+                    document.getElementById("lettersUsed").innerHTML = wrongAnswers;
 
-                // decrement the counter by one and display it
-                answersLeft--;
-                document.getElementById("guessesRemaining").innerHTML = answersLeft;
-            }
-            //EVALUATE WIN OR LOSS CONDITION
-            if (playerGuess === playerUppercase) {
+                    // decrement the counter by one and display it
+                    answersLeft--;
+                    document.getElementById("guessesRemaining").innerHTML = answersLeft;
+                }
 
-                // change messages on screen, show answers
-                document.getElementById("guessMessage").innerHTML = "You got it!";
-                hofPlayers.showAnswer();
+                //EVALUATE WIN OR LOSS CONDITION
+                // this should probably be a separate function
 
-                //increment win counter and display to screen
-                hofPlayers.gameWins++;
-                document.getElementById("playerWins").innerHTML = "Wins: " + hofPlayers.gameWins;
+                if (playerGuess === playerUppercase) {
 
-                // confirm("You won! Would you like to play again?");
-                hofPlayers.isGameOver = true;
+                    // change messages on screen, show answers
+                    document.getElementById("guessMessage").innerHTML = "You got it!";
+                    hofPlayers.showAnswer();
 
-                // WHY IS THIS EXECUTING BEFORE THE SCREEN UPDATES?
-                // start a new game
-                hofPlayers.playGame();
+                    //increment win counter and display to screen
+                    hofPlayers.gameWins++;
+                    document.getElementById("playerWins").innerHTML = "Wins: " + hofPlayers.gameWins;
 
-            } else if (answersLeft === 0) {
-                // change messages on screen, update player name and picture
-                document.getElementById("guessMessage").innerHTML = "You didn't get it.";
-                hofPlayers.showAnswer();
+                    // set game over flag to true so game resets
+                    hofPlayers.isGameOver = true;
 
-                //increment loss counter and display to screen
-                hofPlayers.gameLosses++;
-                document.getElementById("playerLosses").innerHTML = "Losses: " + hofPlayers.gameLosses;
+                } else if (answersLeft === 0) {
+                    // change messages on screen, update player name and picture
+                    document.getElementById("guessMessage").innerHTML = "You didn't get it.";
+                    hofPlayers.showAnswer();
 
-                // set isGameOverFlag
-                hofPlayers.isGameOver = true;
+                    //increment loss counter and display to screen
+                    hofPlayers.gameLosses++;
+                    document.getElementById("playerLosses").innerHTML = "Losses: " + hofPlayers.gameLosses;
 
-
-                // WHY IS THIS EXECUTING BEFORE THE SCREEN UPDATES?
-                // start a new game
-                hofPlayers.playGame();
+                    // set isGameOverFlag
+                    hofPlayers.isGameOver = true;
+                }
             }
         }
     },
     playGame: function () {
-        // if game over is set to true and user confirms to play, then execute these functions
-        var confirmPlay = confirm("Would you like to play?")
-        if (this.isGameOver || confirmPlay) {
+        if (this.isGameOver) {
+            this.selectPlayer();
+            this.createSpaces();
+            this.evaluateInput();
+        }
+        else if (confirm("Are you sure you want to restart?")) {
             this.selectPlayer();
             this.createSpaces();
             this.evaluateInput();
         }
     }
 };
-
-// MAIN EXECUTION OF GAME
-hofPlayers.playGame();
