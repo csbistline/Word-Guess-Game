@@ -17,6 +17,7 @@ var hofPlayers = {
     gameLosses: 0,
     playerImage: "",
     isGameOver: true,
+    defaultImage: "assets/images/150x150.png",
 
     players: [
         "Hank Aaron",
@@ -139,7 +140,7 @@ var hofPlayers = {
                 // this should probably be a separate function
 
                 if (playerGuess === playerUppercase) {
-
+                    // YOU WIN
                     // change messages on screen, show answers
                     document.getElementById("guessMessage").innerHTML = "You got it!";
                     hofPlayers.showAnswer();
@@ -152,6 +153,7 @@ var hofPlayers = {
                     hofPlayers.isGameOver = true;
 
                 } else if (answersLeft === 0) {
+                    // YOU LOSE
                     // change messages on screen, update player name and picture
                     document.getElementById("guessMessage").innerHTML = "You didn't get it.";
                     hofPlayers.showAnswer();
@@ -170,12 +172,19 @@ var hofPlayers = {
         if (this.isGameOver) {
             this.selectPlayer();
             this.createSpaces();
+            this.resetPlayer();
             this.evaluateInput();
         }
         else if (confirm("Are you sure you want to restart?")) {
             this.selectPlayer();
             this.createSpaces();
+            this.resetPlayer();
             this.evaluateInput();
         }
+    },
+    resetPlayer: function () {
+        document.getElementById("guessMessage").innerHTML = "Guess the Hall of Famer";
+        document.getElementById("currentPlayerName").innerHTML = "Keep guessing...";
+        document.getElementById("playerPic").src = this.defaultImage;
     }
 };
