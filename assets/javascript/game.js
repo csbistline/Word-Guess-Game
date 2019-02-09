@@ -18,6 +18,8 @@ var hofPlayers = {
     playerImage: "",
     isGameOver: true,
     defaultImage: "assets/images/150x150.png",
+    soundWin: "assets/sounds/cheer.wav",
+    soundLose: "assets/sounds/boo.wav",
 
     players: [
         "Hank Aaron",
@@ -69,12 +71,21 @@ var hofPlayers = {
 
         //assign picture url to string
         this.playerImage = "assets/images/" + currentPlayer + ".jpg";
-        // console.log(this.playerImage);
+
+        // reset startButton text and make invisible
+        var myButton = document.getElementById("startButton");
+        myButton.value = "Play again?";
+        myButton.style.visibility = "hidden";
+        // document.getElementById("startButton").value = "Play again?";
 
     },
     showAnswer: function () {
         document.getElementById("currentPlayerName").innerHTML = currentPlayer;
         document.getElementById("playerPic").src = this.playerImage;
+        var myButton = document.getElementById("startButton");
+        // myButton.value = "Play again?";
+        myButton.style.visibility = "visible";
+
 
     },
     createSpaces: function () {
@@ -99,8 +110,8 @@ var hofPlayers = {
     evaluateInput: function () {
         // This function is run whenever the user presses a key.
         document.onkeyup = function (event) {
-            // console.log("isGameOver? " + hofPlayers.isGameOver);
 
+            // if the game isn't over, process the keystroke, otherwise ignore it
             if (!hofPlayers.isGameOver) {
 
                 // make everything uppercase to compare
@@ -114,9 +125,6 @@ var hofPlayers = {
                     for (var i = 0; i < playerUppercase.length; i++) {
                         if (playerUppercase.charAt(i) == currentLetter) {
                             playerGuess = playerGuess.substr(0, i) + currentLetter + playerGuess.substr(i + 1);
-
-                            //log the output
-                            // console.log("currentLetter is " + currentLetter + ", and playerGuess is " + playerGuess);
 
                             // Update the screen output of currentPlayer with playerGuess
                             document.getElementById("currentPlayerGuess").innerHTML = playerGuess;
@@ -152,6 +160,10 @@ var hofPlayers = {
                     // set game over flag to true so game resets
                     hofPlayers.isGameOver = true;
 
+                    // play a cheering sound
+                    var audio = new Audio(hofPlayers.soundWin);
+                    audio.play();
+
                 } else if (answersLeft === 0) {
                     // YOU LOSE
                     // change messages on screen, update player name and picture
@@ -164,6 +176,11 @@ var hofPlayers = {
 
                     // set isGameOverFlag
                     hofPlayers.isGameOver = true;
+
+                    // play a booing sound
+                    var audio = new Audio(hofPlayers.soundLose);
+                    audio.play();
+
                 }
             }
         }
@@ -187,4 +204,5 @@ var hofPlayers = {
         document.getElementById("currentPlayerName").innerHTML = "Keep guessing...";
         document.getElementById("playerPic").src = this.defaultImage;
     }
+
 };
