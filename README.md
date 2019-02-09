@@ -20,8 +20,8 @@ For direct contributions, please fork the repository and file a pull request.
 
 ## Credits
 This game uses these sounds from freesound:
-S: 181001_010_crowd_cheer.wav by wangzhuokun -- https://freesound.org/s/442583/ -- License: Creative Commons 0
-S: boo 01.wav by tim.kahn -- https://freesound.org/s/336997/ -- License: Attribution
+* S: 181001_010_crowd_cheer.wav by wangzhuokun -- https://freesound.org/s/442583/ -- License: Creative Commons 0
+* S: boo 01.wav by tim.kahn -- https://freesound.org/s/336997/ -- License: Attribution
 
 ## Contact
 #### Developer/Full-stack Web Software Developer (in training)
