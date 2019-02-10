@@ -20,6 +20,7 @@ var hofPlayers = {
     defaultImage: "assets/images/150x150.png",
     soundWin: "assets/sounds/cheer.wav",
     soundLose: "assets/sounds/boo.wav",
+    takeMeOut: "assets/sounds/ballgame.mp3",
 
     players: [
         "Hank Aaron",
@@ -68,6 +69,7 @@ var hofPlayers = {
         // randomly select a HOFer from the list
         var i = Math.floor((Math.random() * this.players.length));
         currentPlayer = this.players[i];
+        // console.log(i);
 
         //assign picture url to string
         this.playerImage = "assets/images/" + currentPlayer + ".jpg";
@@ -110,16 +112,21 @@ var hofPlayers = {
     evaluateInput: function () {
         // This function is run whenever the user presses a key.
         document.onkeyup = function (event) {
+            var currentLetter = event.key;
+            var currentKeycode = event.keyCode;
 
+            ////////////////////////////////////////////////////////////
             // if the game isn't over, process the keystroke, otherwise ignore it
-            if (!hofPlayers.isGameOver) {
+
+            if (!this.isGameOver && this.validateInput(currentKeycode)) {
 
                 // make everything uppercase to compare
-                var currentLetter = event.key;
                 currentLetter = currentLetter.toUpperCase();
                 var playerUppercase = currentPlayer.toUpperCase();
 
+                ////////////////////////////////////////////////////////////
                 //Check if currentLetter is in currentPlayer
+
                 if (playerUppercase.includes(currentLetter)) {
                     // replace the _ with letter in playerGuess
                     for (var i = 0; i < playerUppercase.length; i++) {
@@ -143,47 +150,51 @@ var hofPlayers = {
                     answersLeft--;
                     document.getElementById("guessesRemaining").innerHTML = answersLeft;
                 }
+                ////////////////////////////////////////////////////////////
 
+
+                ////////////////////////////////////////////////////////////
                 //EVALUATE WIN OR LOSS CONDITION
-                // this should probably be a separate function
 
                 if (playerGuess === playerUppercase) {
                     // YOU WIN
                     // change messages on screen, show answers
                     document.getElementById("guessMessage").innerHTML = "You got it!";
-                    hofPlayers.showAnswer();
+                    this.showAnswer();
 
                     //increment win counter and display to screen
-                    hofPlayers.gameWins++;
-                    document.getElementById("playerWins").innerHTML = "Wins: " + hofPlayers.gameWins;
+                    this.gameWins++;
+                    document.getElementById("playerWins").innerHTML = "Wins: " + this.gameWins;
 
                     // set game over flag to true so game resets
-                    hofPlayers.isGameOver = true;
+                    this.isGameOver = true;
 
                     // play a cheering sound
-                    var audio = new Audio(hofPlayers.soundWin);
+                    var audio = new Audio(this.soundWin);
                     audio.play();
 
                 } else if (answersLeft === 0) {
                     // YOU LOSE
                     // change messages on screen, update player name and picture
                     document.getElementById("guessMessage").innerHTML = "You didn't get it.";
-                    hofPlayers.showAnswer();
+                    this.showAnswer();
 
                     //increment loss counter and display to screen
-                    hofPlayers.gameLosses++;
-                    document.getElementById("playerLosses").innerHTML = "Losses: " + hofPlayers.gameLosses;
+                    this.gameLosses++;
+                    document.getElementById("playerLosses").innerHTML = "Losses: " + this.gameLosses;
 
                     // set isGameOverFlag
-                    hofPlayers.isGameOver = true;
+                    this.isGameOver = true;
 
                     // play a booing sound
-                    var audio = new Audio(hofPlayers.soundLose);
+                    var audio = new Audio(this.soundLose);
                     audio.play();
-
                 }
+                ////////////////////////////////////////////////////////////
+
             }
-        }
+            ////////////////////////////////////////////////////////////
+        }.bind(this);
     },
     playGame: function () {
         if (this.isGameOver) {
@@ -203,6 +214,16 @@ var hofPlayers = {
         document.getElementById("guessMessage").innerHTML = "Guess the Hall of Famer";
         document.getElementById("currentPlayerName").innerHTML = "Keep guessing...";
         document.getElementById("playerPic").src = this.defaultImage;
-    }
-
+    },
+    validateInput: function (val) {
+        // Check if keyCode of currentLetter is between a-z
+        if (65 <= val && val <= 90) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    },
 };
+
+
