@@ -8,7 +8,8 @@ var playerGuess = "";
 var wrongAnswers = "";
 
 // Initialize the wrong answer counter
-var answersLeft = 6;
+var answersLeft;
+var maxAnswers = 12;
 
 
 
@@ -56,7 +57,7 @@ var hofPlayers = {
         this.isGameOver = false;
         wrongAnswers = "";
         playerGuess = "";
-        answersLeft = 6;
+        answersLeft = maxAnswers;
 
         // reset the answer counter to max number
         document.getElementById("guessesRemaining").innerHTML = answersLeft;
@@ -118,7 +119,7 @@ var hofPlayers = {
             ////////////////////////////////////////////////////////////
             // if the game isn't over, process the keystroke, otherwise ignore it
 
-            if (!this.isGameOver && this.validateInput(currentKeycode)) {
+            if (!this.isGameOver && this.validateInput()) {
 
                 // make everything uppercase to compare
                 currentLetter = currentLetter.toUpperCase();
